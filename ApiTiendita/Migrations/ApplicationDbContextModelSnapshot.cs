@@ -29,11 +29,14 @@ namespace ApiTiendita.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NameP")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Precio")
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProovedorId")
                         .HasColumnType("int");
 
                     b.Property<int>("Stock")
@@ -41,7 +44,9 @@ namespace ApiTiendita.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Productos");
+                    b.HasIndex("ProovedorId");
+
+                    b.ToTable("Producto");
                 });
 
             modelBuilder.Entity("ApiTiendita.Entidades.Proovedor", b =>
@@ -56,34 +61,29 @@ namespace ApiTiendita.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Telefono")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductoId");
-
                     b.ToTable("Proovedor");
-                });
-
-            modelBuilder.Entity("ApiTiendita.Entidades.Proovedor", b =>
-                {
-                    b.HasOne("ApiTiendita.Entidades.Producto", "Producto")
-                        .WithMany("Proovedor")
-                        .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Producto");
                 });
 
             modelBuilder.Entity("ApiTiendita.Entidades.Producto", b =>
                 {
+                    b.HasOne("ApiTiendita.Entidades.Proovedor", "Proovedor")
+                        .WithMany("Productos")
+                        .HasForeignKey("ProovedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Proovedor");
+                });
+
+            modelBuilder.Entity("ApiTiendita.Entidades.Proovedor", b =>
+                {
+                    b.Navigation("Productos");
                 });
 #pragma warning restore 612, 618
         }

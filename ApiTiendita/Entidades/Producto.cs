@@ -3,13 +3,16 @@
     public class Producto
     {
 
-        public int Id { get; set; }
+        public int Id { get; set; } 
 
-        public string Name { get; set; }
+        public string NameP { get; set; }
 
+        public int Stock { get; set; }
 
-        //Relacionamos los proovedores con los productos
-        public List<Proovedor> Proovedor { get; set; }
+        public decimal Price { get; set; }
 
+        public int ProovedorId { get; set; }
+
+        public Proovedor Proovedor { get; set; }
     }
 }

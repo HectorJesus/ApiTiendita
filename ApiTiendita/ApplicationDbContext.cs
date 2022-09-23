@@ -12,7 +12,7 @@ namespace ApiTiendita
         }
 
         //Crea la tabla Productos
-        public DbSet<Producto> Productos { get; set; }
+        public DbSet<Producto> Producto { get; set; }
 
         public DbSet<Proovedor> Proovedor { get; set; }
 

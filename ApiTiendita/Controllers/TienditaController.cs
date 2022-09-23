@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ApiTiendita.Controllers
 {
     [ApiController]
-    [Route("producto")]
+    [Route("api/producto")]
 
     public class TienditaController : ControllerBase
     {
@@ -15,14 +15,53 @@ namespace ApiTiendita.Controllers
             this.dbContext = dbContext;
         }
         
+        //Sobreescribimos las rutas del controlador
         [HttpGet]
-        public async Task<ActionResult<List<Producto>>> Get()
+        [HttpGet("Listado")] // api/producto/Listado
+        [HttpGet("/Listados")] // /Listados 
+        //Quitamos la programacion ascincrona
+        public List<Producto> Get()
         {
-            return await dbContext.Productos.Include(x => x.Proovedor).ToListAsync();
+            return dbContext.Producto.Include(x => x.Proovedor).ToList();
+        }
+
+        //Obtenemos el primer producto api/producto/primero
+        [HttpGet("primero")]
+        public Producto PrimerProducto([FromHeader] int valor, [FromQuery] string producto)
+        {
+            return dbContext.Producto.FirstOrDefault();
+        }
+
+        //Buscando un id por parametros
+        [HttpGet("{id:int}/{param=Donitas}")]
+        public ActionResult<Producto> Get(int id,string param)
+        {
+            var productos = dbContext.Producto.FirstOrDefault(x => x.Id == id);
+
+            if (productos == null)
+            {
+                return NotFound();
+            }
+
+            return productos;
+        }
+
+        //Buscando un nombre
+        [HttpGet("{nombre}")]
+        public async Task<ActionResult<Producto>> Get(string nombre)
+        {
+            var productos = await dbContext.Producto.FirstOrDefaultAsync(x => x.NameP == nombre);
+            
+            if(productos == null)
+            {
+                return NotFound();
+            }
+
+            return productos;
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post(Producto producto)
+        public async Task<ActionResult> Post([FromBody] Producto producto)
         {
             dbContext.Add(producto);
             await dbContext.SaveChangesAsync();

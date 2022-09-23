@@ -1,14 +1,22 @@
-﻿namespace ApiTiendita.Entidades
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ApiTiendita.Entidades
 {
     public class Proovedor
     {
 
         public int Id { get; set; }
+        [Required(ErrorMessage = "El campo es requerido")]
+        [StringLength(maximumLength:15, ErrorMessage = "El cambo {0} solo puede tener 15 caracteres")]
+        public string Name { get; set; }
+        [Required(ErrorMessage = "El campo es requerido")]
+        [NotMapped]
+        public string Telefono { get; set; }
+        [Required(ErrorMessage = "El campo es requerido")]
 
-        public string Name { get; set; }  
+        //Relacionamos los proovedores con los productos
+        public List<Producto> Productos { get; set; }
 
-        public string Telefono { get; set; }  
-
-        public Producto Producto { get; set; } 
     }
 }

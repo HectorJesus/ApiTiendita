@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ApiTiendita.Controllers    
 {
     [ApiController]
-    [Route("api/Proovedor")]
+    [Route("api/proovedor")]
     public class ProovedorController : ControllerBase
     {
 
@@ -31,12 +31,13 @@ namespace ApiTiendita.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(Proovedor proovedor)
         {
-            var existeProovedor = await dbContext.Proovedor.AnyAsync(x => x.Id == proovedor.Id);
+            /*
+            var existeProovedor = await dbContext.Producto.AnyAsync(x => x.Id == proovedor.Id);
             if (!existeProovedor)
             {
                 return BadRequest($"No exxiste el proovedor con el id: {proovedor.Id}");
             }
-
+            */
             dbContext.Add(proovedor);
             await dbContext.SaveChangesAsync();
             return Ok();
@@ -66,7 +67,7 @@ namespace ApiTiendita.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var exist = await dbContext.Proovedor.AnyAsync(x => x.Id == id);
+            var exist = await dbContext.Proovedor .AnyAsync(x => x.Id == id);
             if (!exist)
             {
                 return NotFound("El recurso no fue encontrado.");
