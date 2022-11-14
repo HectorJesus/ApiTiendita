@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ApiTiendita.Validaciones;
 
 namespace ApiTiendita.Entidades
 {
@@ -8,7 +9,8 @@ namespace ApiTiendita.Entidades
 
         public int Id { get; set; }
         [Required(ErrorMessage = "El campo es requerido")]
-        [StringLength(maximumLength:15, ErrorMessage = "El cambo {0} solo puede tener 15 caracteres")]
+        [StringLength(maximumLength:15, ErrorMessage = "El campo {0} solo puede tener 15 caracteres")]
+        [PrimeraLetraMayusculaAttribute]
         public string Name { get; set; }
         [Required(ErrorMessage = "El campo es requerido")]
         [NotMapped]

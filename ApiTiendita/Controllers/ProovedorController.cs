@@ -1,6 +1,10 @@
-﻿using ApiTiendita.Entidades;
+﻿using ApiTiendita.Services;
+using ApiTiendita.Controllers;
+using ApiTiendita.Entidades;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace ApiTiendita.Controllers    
 {
@@ -8,17 +12,33 @@ namespace ApiTiendita.Controllers
     [Route("api/proovedor")]
     public class ProovedorController : ControllerBase
     {
-
+    
         private readonly ApplicationDbContext dbContext;
-        
-        public ProovedorController (ApplicationDbContext context)
+        private readonly IMapper mapper;
+        private readonly IConfiguration configuration;
+        private readonly IService service;
+        private readonly ILogger<ProovedorController> logger;
+        private readonly ServiceTransient serviceTransient;
+        private readonly ServiceScoped serviceScoped;
+        private readonly ServiceSingleton serviceSingleton;
+        public ProovedorController(ApplicationDbContext context,
+                                   IService service,
+                                   ServiceTransient serviceTransient,
+                                   ServiceScoped serviceScoped,
+                                   ServiceSingleton serviceSingleton,
+                                   ILogger<ProovedorController> logger)
         {
             this.dbContext = context;
+            this.mapper = mapper;
+            this.configuration = configuration;
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 10)]
         public async Task<ActionResult<List<Proovedor>>> GetAll()
         {
+            logger.LogInformation("Obteniendo listado de proovedores");
+            logger.LogWarning("No apagar el equipo");
             return await dbContext.Proovedor.ToListAsync();
         }
 
@@ -30,14 +50,18 @@ namespace ApiTiendita.Controllers
         //Servicios para crear y actualizar un proovedor
         [HttpPost]
         public async Task<ActionResult> Post(Proovedor proovedor)
-        {
-            /*
-            var existeProovedor = await dbContext.Producto.AnyAsync(x => x.Id == proovedor.Id);
-            if (!existeProovedor)
+        { 
+            //Ejemplo para validar desde el controlador con la BD con ayuda del dbContext
+
+            var existeProovedorMismoNombre = await dbContext.Proovedor.AnyAsync(x => x.Name == proovedor.Name);
+
+            if (existeProovedorMismoNombre)
             {
-                return BadRequest($"No exxiste el proovedor con el id: {proovedor.Id}");
+                return BadRequest($"Ya existe un proovedor con el nombre {proovedor.Name}");
             }
-            */
+           
+            var Proovedor = mapper.Map<Proovedor>(proovedor);
+            
             dbContext.Add(proovedor);
             await dbContext.SaveChangesAsync();
             return Ok();
@@ -78,5 +102,14 @@ namespace ApiTiendita.Controllers
             return Ok();
         }
 
+    }
+
+    internal interface IService
+    {
+    }
+
+    internal interface IMapper
+    {
+        object Map<T>(T proovedor);
     }
 }
